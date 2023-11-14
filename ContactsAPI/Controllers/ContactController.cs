@@ -7,7 +7,6 @@ using System.Net;
 using System.Reflection;
 using System.Xml.Linq;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ContactsAPI.Controllers
 {
