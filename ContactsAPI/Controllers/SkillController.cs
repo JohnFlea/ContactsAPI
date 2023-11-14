@@ -2,6 +2,9 @@
 using ContactsAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,11 +19,19 @@ namespace ContactsAPI.Controllers
         private readonly MyDbContext _myDbContext;
 
         public SkillController(MyDbContext myDbContext) => _myDbContext = myDbContext;
-
+        
+        /// <summary>
+        /// Retourne la liste de tous les Skill
+        /// </summary>
         [HttpGet]
+        [SwaggerOperation(Summary = "Récupère la liste de toutes les compétences.",
+                         Description = "Cette méthode retourne toutes les compétences disponibles.")]
         public async Task<IEnumerable<Skill>> Get() 
             => await _myDbContext.Skills.ToListAsync();
 
+        /// <summary>
+        /// Retourne un Skill à l'aide de son Id
+        /// </summary>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(Skill), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -39,6 +50,9 @@ namespace ContactsAPI.Controllers
         //    return skill == null ? NotFound() : Ok(skill);
         //}
 
+        /// <summary>
+        /// Créer un nouveau Skill
+        /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> Create(Skill skill)
@@ -49,6 +63,10 @@ namespace ContactsAPI.Controllers
             return CreatedAtAction(nameof(GetById), new { id = skill.Id }, skill);
         }
 
+
+        /// <summary>
+        /// Modifier un skill existant
+        /// </summary>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -62,6 +80,9 @@ namespace ContactsAPI.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Supprimer un skill existant
+        /// </summary>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -75,5 +96,6 @@ namespace ContactsAPI.Controllers
 
             return NoContent();
         }
+
     }
 }

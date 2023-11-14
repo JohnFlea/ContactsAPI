@@ -2,6 +2,7 @@
 using ContactsAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
 using System.Net;
 using System.Reflection;
@@ -18,37 +19,69 @@ namespace ContactsAPI.Controllers
 
         public ContactController(MyDbContext myDbContext) => _myDbContext = myDbContext;
 
-        // GET: api/<ContactController>
-        [HttpGet("GetContacts")]
-        public async Task<IEnumerable<Contact>> GetContacts()
-        {
-            return await _myDbContext.Contacts.ToListAsync();
-        }
+        /// <summary>
+        /// Retourne la liste de tous les Contact
+        /// </summary>
+        [HttpGet]
+        public async Task<IEnumerable<Contact>> Get()
+            => await _myDbContext.Contacts.ToListAsync();
 
-        // GET api/<ContactController>/5
-        [HttpGet("GetContact/{id}")]
-        public async Task<IActionResult> GetContact(int id)
+        /// <summary>
+        /// Retourne un Contact à l'aide de son Id
+        /// </summary>
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(Contact), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetById(int id)
         {
             var contact = await _myDbContext.Contacts.FindAsync(id);
             return contact == null ? NotFound() : Ok(contact);
         }
 
-        // POST api/<ContactController>
+        /// <summary>
+        /// Créer un nouveau Contact
+        /// </summary>
         [HttpPost]
-        public void Post([FromBody] Contact value)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<IActionResult> Create(Contact contact)
         {
+            await _myDbContext.Contacts.AddAsync(contact);
+            await _myDbContext.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetById), new { id = contact.Id }, contact);
         }
 
-        // PUT api/<ContactController>/5
+        /// <summary>
+        /// Modifier un contact existant
+        /// </summary>
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Contact value)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Update(int id, Contact contact)
         {
+            if (id != contact.Id) return BadRequest();
+
+            _myDbContext.Entry(contact).State = EntityState.Modified;
+            await _myDbContext.SaveChangesAsync();
+
+            return NoContent();
         }
 
-        // DELETE api/<ContactController>/5
+        /// <summary>
+        /// Supprimer un contact existant
+        /// </summary>
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Delete(int id)
         {
+            var contactToDelete = await _myDbContext.Contacts.FindAsync(id);
+            if (contactToDelete == null) return NotFound();
+
+            _myDbContext.Contacts.Remove(contactToDelete);
+            await _myDbContext.SaveChangesAsync();
+
+            return NoContent();
         }
 
     }
