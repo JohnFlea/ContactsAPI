@@ -20,10 +20,11 @@ namespace ContactsAPI.Models
 
         [Required]
         [EmailAddress(ErrorMessage = "Invalid email address.")]
-        [RegularExpression(@"^[^@\s]+@[^@\s]+\.(com|net|org|gov)$", ErrorMessage = "Invalid pattern.")]
+        [RegularExpression(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$", ErrorMessage = "Invalid pattern.")]
         public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Mobile is required")]
+        [RegularExpression(@"^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$", ErrorMessage = "Invalid pattern.")]
         public string Mobile { get; set; } = string.Empty;
     }
 }
