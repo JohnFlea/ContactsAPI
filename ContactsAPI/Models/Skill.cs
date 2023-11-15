@@ -1,9 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Swashbuckle.AspNetCore.Annotations;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ContactsAPI.Models
 {
     public class Skill
     {
+        [SwaggerSchema(ReadOnly = true)]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Name is required")]
@@ -11,5 +14,8 @@ namespace ContactsAPI.Models
 
         [Required(ErrorMessage = "Level is required")]
         public string Level { get; set; } = string.Empty;
+
+        [JsonIgnore]
+        public virtual ICollection<Contact> Contacts { get; set; } = new List<Contact>();
     }
 }

@@ -24,7 +24,7 @@ namespace ContactsAPI.Controllers
         /// </summary>
         [HttpGet]
         public async Task<IEnumerable<Contact>> Get()
-            => await _myDbContext.Contacts.ToListAsync();
+            => await _myDbContext.Contacts.Include(p => p.Skills).ToListAsync();
 
         /// <summary>
         /// Retourne un Contact à l'aide de son Id
@@ -34,7 +34,7 @@ namespace ContactsAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetById(int id)
         {
-            var contact = await _myDbContext.Contacts.FindAsync(id);
+            var contact = await _myDbContext.Contacts.Include(p => p.Skills).FirstOrDefaultAsync(p => p.Id == id);
             return contact == null ? NotFound() : Ok(contact);
         }
 
@@ -50,6 +50,7 @@ namespace ContactsAPI.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = contact.Id }, contact);
         }
+        
 
         /// <summary>
         /// Modifier un contact existant
@@ -79,6 +80,49 @@ namespace ContactsAPI.Controllers
             if (contactToDelete == null) return NotFound();
 
             _myDbContext.Contacts.Remove(contactToDelete);
+            await _myDbContext.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+
+        /// <summary>
+        /// Ajouter un skill à un contact
+        /// </summary>
+        [HttpPut("{contactId}/Skill/{skillId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> AddSkill(int contactId, int skillId)
+        {
+            var contact = await _myDbContext.Contacts.FindAsync(contactId);
+            if (contact == null) return NotFound($"Pas de contact avec l'ID: {contactId}");
+
+            var skill = await _myDbContext.Skills.FindAsync(skillId);
+            if (skill == null) return NotFound($"Pas de skill avec l'ID: {skillId}");
+
+            contact.Skills.Add(skill);
+
+            _myDbContext.Entry(contact).State = EntityState.Modified;
+            await _myDbContext.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Supprimer un skill à un contact
+        /// </summary>
+        [HttpDelete("{contactId}/Skill/{skillId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> RemoveSkill(int contactId, int skillId)
+        {
+            var contact = await _myDbContext.Contacts.Include(p => p.Skills).FirstOrDefaultAsync(p => p.Id == contactId);
+            if (contact == null) return NotFound($"Pas de contact avec l'ID: {contactId}");
+
+            var skill = contact.Skills.Where(x => x.Id == skillId).FirstOrDefault();
+            if (skill == null) return NotFound($"Pas de skill avec l'ID: {skillId}");
+
+            contact.Skills.Remove(skill);
+
+            _myDbContext.Entry(contact).State = EntityState.Modified;
             await _myDbContext.SaveChangesAsync();
 
             return NoContent();

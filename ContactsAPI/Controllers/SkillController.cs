@@ -24,8 +24,8 @@ namespace ContactsAPI.Controllers
         /// Retourne la liste de tous les Skill
         /// </summary>
         [HttpGet]
-        [SwaggerOperation(Summary = "Récupère la liste de toutes les compétences.",
-                         Description = "Cette méthode retourne toutes les compétences disponibles.")]
+        [SwaggerOperation(Summary = "Récupère la liste de toutes les skills.",
+                         Description = "Cette méthode retourne toutes les skills existants.")]
         public async Task<IEnumerable<Skill>> Get() 
             => await _myDbContext.Skills.ToListAsync();
 

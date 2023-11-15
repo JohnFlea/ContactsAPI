@@ -18,6 +18,8 @@ builder.Services.AddSwaggerGen(s =>
         Description = "API for managing contacts and their skills"
     });
 
+    s.EnableAnnotations();
+
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory,xmlFile);
     s.IncludeXmlComments(xmlPath);
