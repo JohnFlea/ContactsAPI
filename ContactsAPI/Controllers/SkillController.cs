@@ -26,8 +26,10 @@ namespace ContactsAPI.Controllers
         [HttpGet]
         [SwaggerOperation(Summary = "Récupère la liste de toutes les skills.",
                          Description = "Cette méthode retourne toutes les skills existants.")]
-        public async Task<IEnumerable<Skill>> Get() 
-            => await _myDbContext.Skills.ToListAsync();
+        public async Task<IEnumerable<Skill>> Get()
+        {
+            return await _myDbContext.Skills.Include(p => p.Contacts).ToListAsync();
+        }
 
         /// <summary>
         /// Retourne un Skill à l'aide de son Id
@@ -46,7 +48,7 @@ namespace ContactsAPI.Controllers
         /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> Create(Skill skill)
+        public async Task<IActionResult> Create([FromBody]Skill skill)
         {
             await _myDbContext.Skills.AddAsync(skill);
             await _myDbContext.SaveChangesAsync();

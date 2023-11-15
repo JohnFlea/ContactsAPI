@@ -24,7 +24,9 @@ namespace ContactsAPI.Controllers
         /// </summary>
         [HttpGet]
         public async Task<IEnumerable<Contact>> Get()
-            => await _myDbContext.Contacts.Include(p => p.Skills).ToListAsync();
+        { 
+            return await _myDbContext.Contacts.Include(p => p.Skills).ToListAsync();
+        }
 
         /// <summary>
         /// Retourne un Contact à l'aide de son Id
@@ -43,7 +45,7 @@ namespace ContactsAPI.Controllers
         /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> Create(Contact contact)
+        public async Task<IActionResult> Create([FromBody] Contact contact)
         {
             await _myDbContext.Contacts.AddAsync(contact);
             await _myDbContext.SaveChangesAsync();
@@ -51,7 +53,6 @@ namespace ContactsAPI.Controllers
             return CreatedAtAction(nameof(GetById), new { id = contact.Id }, contact);
         }
         
-
         /// <summary>
         /// Modifier un contact existant
         /// </summary>
@@ -84,7 +85,6 @@ namespace ContactsAPI.Controllers
 
             return NoContent();
         }
-
 
         /// <summary>
         /// Ajouter un skill à un contact
