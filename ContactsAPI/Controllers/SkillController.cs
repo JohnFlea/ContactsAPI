@@ -41,15 +41,6 @@ namespace ContactsAPI.Controllers
             return skill == null ? NotFound() : Ok(skill);
         }
 
-        //[HttpGet("search/{name}")]
-        //[ProducesResponseType(typeof(Skill), StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //public async Task<IActionResult> GetByname(string name)
-        //{
-        //    var skill = await _myDbContext.Skills.SingleOrDefaultAsync(c=> c.Name name);
-        //    return skill == null ? NotFound() : Ok(skill);
-        //}
-
         /// <summary>
         /// Créer un nouveau Skill
         /// </summary>
@@ -62,7 +53,6 @@ namespace ContactsAPI.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = skill.Id }, skill);
         }
-
 
         /// <summary>
         /// Modifier un skill existant

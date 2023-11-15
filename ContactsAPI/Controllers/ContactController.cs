@@ -108,7 +108,7 @@ namespace ContactsAPI.Controllers
         }
 
         /// <summary>
-        /// Supprimer un skill à un contact
+        /// Retirer un skill à un contact
         /// </summary>
         [HttpDelete("{contactId}/Skill/{skillId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
