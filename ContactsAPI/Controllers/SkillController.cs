@@ -59,7 +59,7 @@ namespace ContactsAPI.Controllers
         }
 
         /// <summary>
-        /// Modify existing contact
+        /// Modify existing skill
         /// </summary>
         /// <param name="id">Id of the skill</param>
         /// <param name="skill">Skill with modifications</param>

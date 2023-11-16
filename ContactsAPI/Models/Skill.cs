@@ -6,7 +6,6 @@ namespace ContactsAPI.Models
 {
     public class Skill
     {
-        [SwaggerSchema(ReadOnly = true)]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Name is required")]
